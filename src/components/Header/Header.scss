@@ -1,0 +1,31 @@
+.header-container {
+  .navbar {
+    padding-top: 20px;
+    z-index: 10;
+    background-color: transparent !important;
+
+    &-nav {
+      .nav-link.active {
+        color: #00bfff;
+      }
+    }
+  }
+
+  .nav-btn {
+    padding: 9px 16px;
+    border: 1px solid #999;
+    border-radius: 4px;
+    &.btn-login {
+      margin-right: 16px;
+      color: #666;
+    }
+    &.btn-signup {
+      background-color: #262627;
+      color: #fff;
+      transition: all 0.2s linear;
+      &:hover {
+        background-color: #444;
+      }
+    }
+  }
+}
