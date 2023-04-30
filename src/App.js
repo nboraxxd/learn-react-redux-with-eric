@@ -1,11 +1,12 @@
 import React from 'react'
 import './styles/reset.css'
 import './App.scss'
+import Header from './Header/Header'
 
 const App = () => {
   return (
     <div>
-      <button>hello world</button>
+      <Header></Header>
     </div>
   )
 }
