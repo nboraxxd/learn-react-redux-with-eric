@@ -1,11 +1,11 @@
 import { useState } from 'react'
+import axios from 'axios'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 import './ModalAddNewUser.scss'
 import { MdImageSearch } from 'react-icons/md'
 
-function ModalAddNewUser() {
-  const [show, setShow] = useState(false)
+function ModalAddNewUser({ show, setShow }) {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -13,28 +13,46 @@ function ModalAddNewUser() {
   const [image, setImage] = useState('')
   const [imageReview, setImageReivew] = useState(null)
 
-  const handleClose = () => setShow(false)
-  const handleShow = () => setShow(true)
+  const handleClose = () => {
+    setShow(false)
+    setUsername('')
+    setEmail('')
+    setPassword('')
+    setRole('')
+    setImage('')
+    setImageReivew(null)
+  }
 
   function handleChooseAnImage(e) {
     const objectImg = e.target.files[0]
-
     if (e.target?.files[0]) {
       setImage(objectImg)
       setImageReivew(URL.createObjectURL(objectImg))
     }
   }
 
+  async function handleSubmitCreateUser() {
+    const newUser = new FormData()
+    newUser.append('username', 'username')
+    newUser.append('email', email)
+    newUser.append('password', password)
+    newUser.append('role', role)
+    newUser.append('userImage', image)
+
+    const response = await axios.post('http://localhost:8081/api/v1/participant', newUser)
+
+    console.log('response', response)
+  }
+
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
-        Add new user
-      </Button>
-
       <Modal show={show} size="lg" onHide={handleClose} backdrop="static" className="modal">
+        {/* Header modal */}
         <Modal.Header closeButton>
-          <Modal.Title>Modal add new user</Modal.Title>
+          <Modal.Title>Add new user</Modal.Title>
         </Modal.Header>
+
+        {/* Main modal */}
         <Modal.Body>
           {/* Form add new user */}
           <form className="row g-3">
@@ -48,6 +66,7 @@ function ModalAddNewUser() {
                 className="form-control"
                 id="userName"
                 placeholder="Enter your username"
+                autoComplete="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
@@ -78,6 +97,7 @@ function ModalAddNewUser() {
                 className="form-control"
                 id="inputPassword"
                 placeholder="Enter your password"
+                autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -130,11 +150,16 @@ function ModalAddNewUser() {
             </div>
           </form>
         </Modal.Body>
+
+        {/* Footer modal */}
         <Modal.Footer>
+          {/* Close button */}
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
+
+          {/* Create button */}
+          <Button variant="primary" onClick={handleSubmitCreateUser}>
             Create
           </Button>
         </Modal.Footer>
