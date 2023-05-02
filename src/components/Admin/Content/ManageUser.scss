@@ -1,0 +1,16 @@
+.manage-user {
+  padding: 10px;
+
+  &-title {
+    font-size: 28px;
+    font-weight: 600;
+  }
+
+  &-btn {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    column-gap: 8px;
+    font-size: 18px;
+  }
+}
