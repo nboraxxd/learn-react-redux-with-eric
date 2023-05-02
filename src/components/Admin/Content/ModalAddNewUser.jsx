@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import axios from 'axios'
+import { toast } from 'react-toastify'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 import './ModalAddNewUser.scss'
@@ -13,7 +14,7 @@ function ModalAddNewUser({ show, setShow }) {
   const [image, setImage] = useState('')
   const [imageReview, setImageReivew] = useState(null)
 
-  const handleClose = () => {
+  function handleClose() {
     setShow(false)
     setUsername('')
     setEmail('')
@@ -21,6 +22,14 @@ function ModalAddNewUser({ show, setShow }) {
     setRole('')
     setImage('')
     setImageReivew(null)
+  }
+
+  function validateEmail(email) {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      )
   }
 
   function handleChooseAnImage(e) {
@@ -32,16 +41,31 @@ function ModalAddNewUser({ show, setShow }) {
   }
 
   async function handleSubmitCreateUser() {
+    // validate
+    const isValidateEmail = validateEmail(email)
+    !isValidateEmail && toast.error('Please check your email')
+    !password && toast.error('Please check your password')
+    !role && toast.error('Please select one of the two roles')
+
+    if (!isValidateEmail || !password || !role) return
+
+    // submit new user
     const newUser = new FormData()
-    newUser.append('username', 'username')
+    newUser.append('username', username)
     newUser.append('email', email)
     newUser.append('password', password)
     newUser.append('role', role)
     newUser.append('userImage', image)
 
     const response = await axios.post('http://localhost:8081/api/v1/participant', newUser)
+    if (response.data?.EC === 0) {
+      toast.success(response.data?.EM)
+      handleClose()
+    } else {
+      toast.error(response.data?.EM)
+    }
 
-    console.log('response', response)
+    return response
   }
 
   return (
