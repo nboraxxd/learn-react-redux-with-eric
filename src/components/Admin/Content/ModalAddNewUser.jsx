@@ -1,18 +1,21 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 import './ModalAddNewUser.scss'
 import { MdImageSearch } from 'react-icons/md'
+import { RiDeleteBin5Line } from 'react-icons/ri'
+import { postCreateNewUser } from '../../../services/apiServices'
 
-function ModalAddNewUser({ show, setShow }) {
+const ModalAddNewUser = ({ show, setShow, fetchUserList }) => {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [role, setRole] = useState('')
-  const [image, setImage] = useState('')
+  const [image, setImage] = useState(null)
   const [imageReview, setImageReivew] = useState(null)
+  const imageRef = useRef()
 
   function handleClose() {
     setShow(false)
@@ -20,7 +23,7 @@ function ModalAddNewUser({ show, setShow }) {
     setEmail('')
     setPassword('')
     setRole('')
-    setImage('')
+    setImage(null)
     setImageReivew(null)
   }
 
@@ -30,6 +33,12 @@ function ModalAddNewUser({ show, setShow }) {
       .match(
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       )
+  }
+
+  function handleClickDeleteImgIcon() {
+    imageRef.current.value = null
+    setImage(null)
+    setImageReivew(null)
   }
 
   function handleChooseAnImage(e) {
@@ -50,22 +59,17 @@ function ModalAddNewUser({ show, setShow }) {
     if (!isValidateEmail || !password || !role) return
 
     // submit new user
-    const newUser = new FormData()
-    newUser.append('username', username)
-    newUser.append('email', email)
-    newUser.append('password', password)
-    newUser.append('role', role)
-    newUser.append('userImage', image)
+    const dataResponse = await postCreateNewUser(username, email, password, role, image)
 
-    const response = await axios.post('http://localhost:8081/api/v1/participant', newUser)
-    if (response.data?.EC === 0) {
-      toast.success(response.data?.EM)
+    if (dataResponse.EC === 0) {
+      toast.success(dataResponse?.EM)
       handleClose()
+      await fetchUserList()
     } else {
-      toast.error(response.data?.EM)
+      toast.error(dataResponse?.EM)
     }
 
-    return response
+    return dataResponse
   }
 
   return (
@@ -161,8 +165,12 @@ function ModalAddNewUser({ show, setShow }) {
                 type="file"
                 accept="image/png, image/jpeg, image/gif, image/svg+xml"
                 id="inputImage"
+                ref={imageRef}
                 hidden
-                onChange={(e) => handleChooseAnImage(e)}
+                onChange={(e) => {
+                  console.log('hmm')
+                  handleChooseAnImage(e)
+                }}
               />
             </div>
             <div className="col-md-12 modal-preview">
@@ -171,6 +179,10 @@ function ModalAddNewUser({ show, setShow }) {
               ) : (
                 <label htmlFor="inputImage">Choose an image...</label>
               )}
+              <RiDeleteBin5Line
+                className="modal-preview-delete"
+                onClick={handleClickDeleteImgIcon}
+              />
             </div>
           </form>
         </Modal.Body>
