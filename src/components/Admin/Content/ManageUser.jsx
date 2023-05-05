@@ -1,12 +1,23 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FiUserPlus } from 'react-icons/fi'
 import ModalAddNewUser from './ModalAddNewUser'
 import './ManageUser.scss'
+import TableUser from './TableUser'
+import { getAllUser } from '../../../services/apiServices'
 
 const ManageUser = () => {
   const [showModalAddNewUser, setShowModalAddNewUser] = useState(false)
+  const [userList, setUserList] = useState([])
 
-  function handleOnClickAddNewUserBtn() {}
+  async function fetchUserList() {
+    const responseUserList = await getAllUser()
+
+    if (responseUserList.EC === 0) return setUserList(responseUserList.DT)
+  }
+
+  useEffect(() => {
+    fetchUserList()
+  }, [])
 
   return (
     <div className="manage-user">
@@ -18,8 +29,14 @@ const ManageUser = () => {
         >
           <FiUserPlus style={{ fontSize: '22px' }} /> Add new user
         </button>
-        <ModalAddNewUser show={showModalAddNewUser} setShow={setShowModalAddNewUser} />
-        <div className="manage-user-table">table user</div>
+        <ModalAddNewUser
+          show={showModalAddNewUser}
+          setShow={setShowModalAddNewUser}
+          fetchUserList={fetchUserList}
+        />
+        <div className="manage-user-table">
+          <TableUser userList={userList} />
+        </div>
       </div>
     </div>
   )

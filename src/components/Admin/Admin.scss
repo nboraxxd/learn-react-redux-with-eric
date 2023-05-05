@@ -9,17 +9,14 @@
 
   &-header {
     height: 40px;
-    border: 1px solid palevioletred;
   }
 
   &-main {
-    border: 1px solid peru;
   }
-
 }
 
 .pro-sidebar {
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .btn-toggle {
