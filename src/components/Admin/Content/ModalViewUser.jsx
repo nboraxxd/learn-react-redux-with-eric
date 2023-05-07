@@ -1,24 +1,30 @@
-import { useRef, useState } from 'react'
-import axios from 'axios'
-import { toast } from 'react-toastify'
+import { useEffect, useRef, useState } from 'react'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
-import './ModalAddNewUser.scss'
-import { MdImageSearch } from 'react-icons/md'
-import { RiDeleteBin5Line } from 'react-icons/ri'
-import { postCreateNewUser } from '../../../services/apiServices'
+import './ModalViewUser.scss'
+import _ from 'lodash'
 
-const ModalAddNewUser = ({ show, setShow, fetchUserList }) => {
+const ModalViewUser = ({ show, setShow, userView, setUserView }) => {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [role, setRole] = useState('')
   const [image, setImage] = useState(null)
   const [imageReview, setImageReivew] = useState(null)
-  const imageRef = useRef()
+
+  useEffect(() => {
+    if (_.isEmpty(userView)) return
+
+    setUsername(userView.username)
+    setEmail(userView.email)
+    setRole(userView.role)
+    setImage(userView.image)
+    userView.image && setImageReivew(`data:image/jpeg;base64,${userView.image}`)
+  }, [userView])
 
   function handleClose() {
     setShow(false)
+    setUserView({})
     setUsername('')
     setEmail('')
     setPassword('')
@@ -27,57 +33,12 @@ const ModalAddNewUser = ({ show, setShow, fetchUserList }) => {
     setImageReivew(null)
   }
 
-  function validateEmail(email) {
-    return String(email)
-      .toLowerCase()
-      .match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      )
-  }
-
-  function handleClickDeleteImgIcon() {
-    imageRef.current.value = null
-    setImage(null)
-    setImageReivew(null)
-  }
-
-  function handleChooseAnImage(e) {
-    const objectImg = e.target.files[0]
-    if (e.target?.files[0]) {
-      setImage(objectImg)
-      setImageReivew(URL.createObjectURL(objectImg))
-    }
-  }
-
-  async function handleSubmitCreateUser() {
-    // validate
-    const isValidateEmail = validateEmail(email)
-    !isValidateEmail && toast.error('Please check your email')
-    !password && toast.error('Please check your password')
-    !role && toast.error('Please select one of the two roles')
-
-    if (!isValidateEmail || !password || !role) return
-
-    // submit new user
-    const dataResponse = await postCreateNewUser(username, email, password, role, image)
-
-    if (dataResponse.EC === 0) {
-      toast.success(dataResponse?.EM)
-      handleClose()
-      await fetchUserList()
-    } else {
-      toast.error(dataResponse?.EM)
-    }
-
-    return dataResponse
-  }
-
   return (
     <>
       <Modal show={show} size="lg" onHide={handleClose} backdrop="static" className="modal">
         {/* Header modal */}
         <Modal.Header closeButton>
-          <Modal.Title>Add new user</Modal.Title>
+          <Modal.Title>User information modal</Modal.Title>
         </Modal.Header>
 
         {/* Main modal */}
@@ -90,6 +51,7 @@ const ModalAddNewUser = ({ show, setShow, fetchUserList }) => {
                 Username
               </label>
               <input
+                disabled
                 type="text"
                 className="form-control"
                 id="userName"
@@ -106,6 +68,7 @@ const ModalAddNewUser = ({ show, setShow, fetchUserList }) => {
                 Email
               </label>
               <input
+                disabled
                 type="email"
                 className="form-control"
                 id="inputEmail"
@@ -121,10 +84,11 @@ const ModalAddNewUser = ({ show, setShow, fetchUserList }) => {
                 Password
               </label>
               <input
+                disabled
                 type="password"
                 className="form-control"
                 id="inputPassword"
-                placeholder="Enter your password"
+                placeholder="Feature not supported"
                 autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -137,6 +101,7 @@ const ModalAddNewUser = ({ show, setShow, fetchUserList }) => {
                 Role
               </label>
               <select
+                disabled
                 id="inputState"
                 className="form-select"
                 value={role}
@@ -155,31 +120,15 @@ const ModalAddNewUser = ({ show, setShow, fetchUserList }) => {
               </select>
             </div>
 
-            {/* Choose an image */}
-            <div className="col-md-12">
-              <label htmlFor="inputImage" className="form-label modal-label btn btn-primary">
-                <MdImageSearch style={{ fontSize: '24px' }} />
-                Choose an image
-              </label>
-              <input
-                type="file"
-                accept="image/png, image/jpeg, image/gif, image/svg+xml"
-                id="inputImage"
-                ref={imageRef}
-                hidden
-                onChange={(e) => handleChooseAnImage(e)}
-              />
-            </div>
+            {/* user image */}
             <div className="col-md-12 modal-preview">
               {imageReview ? (
-                <img src={imageReview} alt="" className="modal-preview-img" />
+                <>
+                  <img src={imageReview} alt="" className="modal-preview-img" />
+                </>
               ) : (
-                <label htmlFor="inputImage">Choose an image...</label>
+                <p>This user has no image</p>
               )}
-              <RiDeleteBin5Line
-                className="modal-preview-delete"
-                onClick={handleClickDeleteImgIcon}
-              />
             </div>
           </form>
         </Modal.Body>
@@ -190,15 +139,10 @@ const ModalAddNewUser = ({ show, setShow, fetchUserList }) => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-
-          {/* Create button */}
-          <Button variant="primary" onClick={handleSubmitCreateUser}>
-            Create
-          </Button>
         </Modal.Footer>
       </Modal>
     </>
   )
 }
 
-export default ModalAddNewUser
+export default ModalViewUser

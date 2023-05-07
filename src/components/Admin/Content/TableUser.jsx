@@ -1,8 +1,11 @@
-import React, { useState } from 'react'
-import { useEffect } from 'react'
-import { getAllUser } from '../../../services/apiServices'
+import React from 'react'
 
-const TableUser = ({userList}) => {
+const TableUser = ({
+  userList,
+  handleOnClickViewBtn,
+  handleOnClickUpdateBtn,
+  handleOnClickDeleteBtn,
+}) => {
   return (
     <>
       <table className="table table-bordered table-hover">
@@ -34,9 +37,24 @@ const TableUser = ({userList}) => {
                   .slice(1)
                   .toLowerCase()}`}</td>
                 <td>
-                  <button className="btn btn-info me-2">View</button>
-                  <button className="btn btn-warning  me-2">Update</button>
-                  <button className="btn btn-danger">Delete</button>
+                  <button
+                    className="btn btn-info me-2"
+                    onClick={() => handleOnClickViewBtn(userItem)}
+                  >
+                    View
+                  </button>
+                  <button
+                    className="btn btn-warning me-2"
+                    onClick={() => handleOnClickUpdateBtn(userItem)}
+                  >
+                    Update
+                  </button>
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => handleOnClickDeleteBtn(userItem)}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
