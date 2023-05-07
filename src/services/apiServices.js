@@ -1,5 +1,9 @@
 import axiosCustomize from '../utils/axiosCustomize'
 
+async function getAllUser() {
+  return await axiosCustomize.get('api/v1/participant/all')
+}
+
 async function postCreateNewUser(username, email, password, role, image) {
   const newUser = new FormData()
   newUser.append('username', username)
@@ -11,8 +15,18 @@ async function postCreateNewUser(username, email, password, role, image) {
   return await axiosCustomize.post('api/v1/participant', newUser)
 }
 
-async function getAllUser() {
-  return await axiosCustomize.get('api/v1/participant/all')
+async function putUpdateUser(id, username, role, image) {
+  const userUpdate = new FormData()
+  userUpdate.append('id', id)
+  userUpdate.append('username', username)
+  userUpdate.append('role', role)
+  userUpdate.append('userImage', image)
+
+  return await axiosCustomize.put('api/v1/participant', userUpdate)
 }
 
-export { postCreateNewUser, getAllUser }
+async function deleteUser(id) {
+  return await axiosCustomize.delete('api/v1/participant', { data: { id } })
+}
+
+export { getAllUser, postCreateNewUser, putUpdateUser, deleteUser }
