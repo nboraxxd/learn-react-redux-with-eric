@@ -8,7 +8,9 @@ import { RiDeleteBin5Line } from 'react-icons/ri'
 import { putUpdateUser } from '../../../services/apiServices'
 import _ from 'lodash'
 
-const ModalUpdateUser = ({ show, setShow, fetchUserList, userUpdate, setUserUpdate }) => {
+const ModalUpdateUser = (props) => {
+  const { show, setShow, userUpdate, setUserUpdate, currentPage, fetchUserListWithPaginate } = props
+
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -77,7 +79,7 @@ const ModalUpdateUser = ({ show, setShow, fetchUserList, userUpdate, setUserUpda
     if (dataResponse.EC === 0) {
       toast.success(dataResponse?.EM)
       handleClose()
-      await fetchUserList()
+      await fetchUserListWithPaginate(currentPage)
     } else {
       toast.error(dataResponse?.EM)
     }
