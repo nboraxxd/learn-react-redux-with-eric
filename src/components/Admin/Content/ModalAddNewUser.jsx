@@ -8,7 +8,7 @@ import { MdImageSearch } from 'react-icons/md'
 import { RiDeleteBin5Line } from 'react-icons/ri'
 import { postCreateNewUser } from '../../../services/apiServices'
 
-const ModalAddNewUser = ({ show, setShow, fetchUserList }) => {
+const ModalAddNewUser = ({ show, setShow, setCurrentPage, fetchUserListWithPaginate }) => {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -64,7 +64,8 @@ const ModalAddNewUser = ({ show, setShow, fetchUserList }) => {
     if (dataResponse.EC === 0) {
       toast.success(dataResponse?.EM)
       handleClose()
-      await fetchUserList()
+      setCurrentPage(1)
+      await fetchUserListWithPaginate(1)
     } else {
       toast.error(dataResponse?.EM)
     }

@@ -4,6 +4,10 @@ async function getAllUser() {
   return await axiosCustomize.get('api/v1/participant/all')
 }
 
+async function getAllUserWithPaginate(page, limit) {
+  return await axiosCustomize.get(`api/v1/participant?page=${page}&limit=${limit}`)
+}
+
 async function postCreateNewUser(username, email, password, role, image) {
   const newUser = new FormData()
   newUser.append('username', username)
@@ -29,4 +33,4 @@ async function deleteUser(id) {
   return await axiosCustomize.delete('api/v1/participant', { data: { id } })
 }
 
-export { getAllUser, postCreateNewUser, putUpdateUser, deleteUser }
+export { getAllUser, getAllUserWithPaginate, postCreateNewUser, putUpdateUser, deleteUser }
