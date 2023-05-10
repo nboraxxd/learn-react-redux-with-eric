@@ -33,4 +33,15 @@ async function deleteUser(id) {
   return await axiosCustomize.delete('api/v1/participant', { data: { id } })
 }
 
-export { getAllUser, getAllUserWithPaginate, postCreateNewUser, putUpdateUser, deleteUser }
+async function postLogin(email, password) {
+  return await axiosCustomize.post('api/v1/login', { email, password } )
+}
+
+export {
+  getAllUser,
+  getAllUserWithPaginate,
+  postCreateNewUser,
+  putUpdateUser,
+  deleteUser,
+  postLogin,
+}

@@ -2,10 +2,12 @@ import Container from 'react-bootstrap/Container'
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
 import NavDropdown from 'react-bootstrap/NavDropdown'
-import { NavLink } from 'react-router-dom'
+import { useNavigate, NavLink } from 'react-router-dom'
 import './Header.scss'
 
 const Header = () => {
+  const navigate = useNavigate()
+
   return (
     <Navbar bg="light" expand="lg">
       <Container>
@@ -28,8 +30,12 @@ const Header = () => {
           </Nav>
           <Nav>
             <>
-              <button className="nav-btn btn-login">Log in</button>
-              <button className="nav-btn btn-signup">Sign up</button>
+              <button className="nav-btn btn-login" onClick={() => navigate('/log-in')}>
+                Log in
+              </button>
+              <button className="nav-btn btn-signup" onClick={() => navigate('/sign-up')}>
+                Sign up
+              </button>
             </>
             {/* <NavDropdown title="Settings" id="basic-nav-dropdown">
               <NavDropdown.Item>Profile</NavDropdown.Item>
