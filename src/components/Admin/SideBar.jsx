@@ -12,10 +12,12 @@ import {
 import { FaTachometerAlt, FaGem, FaList, FaGithub } from 'react-icons/fa'
 import { DiReact } from 'react-icons/di'
 import sidebarBg from '../../assets/bg2.jpg'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const SideBar = (props) => {
   const { image, collapsed, toggled, handleToggleSidebar } = props
+
+  const navigate = useNavigate()
 
   return (
     <>
@@ -43,8 +45,11 @@ const SideBar = (props) => {
               size={'3em'}
               color={'00bfff'}
               style={{ cursor: 'pointer', display: 'inline' }}
+              onClick={() => navigate('/')}
             ></DiReact>
-            <span style={{ cursor: 'pointer' }}>Pro Quizzz</span>
+            <span style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
+              Pro Quizzz
+            </span>
           </div>
         </SidebarHeader>
 

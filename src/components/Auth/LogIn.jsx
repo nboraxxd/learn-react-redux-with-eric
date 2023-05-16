@@ -20,6 +20,8 @@ const LogIn = () => {
 
   async function handleOnClickSubmitLogInBtn(e) {
     e.preventDefault()
+
+    // validate
     const isValidateEmail = validateEmail(email)
 
     if (!isValidateEmail) toast.error('Please check your email')
@@ -27,11 +29,13 @@ const LogIn = () => {
     if (!isValidateEmail || !password) return
 
     const response = await postLogin(email, password)
-    console.log(response)
 
     if (response.EC === 0) toast.success(response.EM)
-
     if (response.EC !== 0) toast.error(response.EM)
+
+    setTimeout(() => {
+      navigate('/')
+    }, 4000)
   }
 
   return (

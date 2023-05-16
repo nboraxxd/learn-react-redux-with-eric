@@ -34,7 +34,11 @@ async function deleteUser(id) {
 }
 
 async function postLogin(email, password) {
-  return await axiosCustomize.post('api/v1/login', { email, password } )
+  return await axiosCustomize.post('api/v1/login', { email, password })
+}
+
+async function postSignUp(username, email, password) {
+  return await axiosCustomize.post('api/v1/register', { username, email, password })
 }
 
 export {
@@ -44,4 +48,5 @@ export {
   putUpdateUser,
   deleteUser,
   postLogin,
+  postSignUp,
 }
