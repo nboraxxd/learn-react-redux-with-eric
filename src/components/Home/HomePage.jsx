@@ -4,6 +4,8 @@ import homepageVideo from '../../assets/video-homepage.mp4'
 import './HomePage.scss'
 
 const HomePage = () => {
+  const navigate = useNavigate()
+
   return (
     <div className="homepage-container">
       <video className="homepage-video" autoPlay muted loop>
@@ -16,7 +18,9 @@ const HomePage = () => {
           typeform instead—and make everyone happy.
         </p>
         <>
-          <button className="homepage-button">Get started - it's free</button>
+          <button className="homepage-button" onClick={() => navigate('/sign-up')}>
+            Get started - it's free
+          </button>
           <ul className="homepage-list">
             <li className="homepage-benefit">
               <p className="homepage-icon">✓</p>
