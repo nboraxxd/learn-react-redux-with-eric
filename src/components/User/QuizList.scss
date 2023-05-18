@@ -1,0 +1,38 @@
+.card-list {
+  display: flex;
+  gap: 25px;
+}
+
+.card {
+  &-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 166px;
+  }
+
+  &-title {
+    text-align: center;
+  }
+
+  &-text {
+    flex-grow: 1;
+  }
+
+  &-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  button {
+    display: block;
+    margin: 0 auto;
+  }
+
+  &-img-top {
+    height: 200px;
+    object-fit: cover;
+  }
+}

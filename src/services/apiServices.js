@@ -1,3 +1,4 @@
+import axios from 'axios'
 import axiosCustomize from '../utils/axiosCustomize'
 
 async function getAllUser() {
@@ -34,11 +35,19 @@ async function deleteUser(id) {
 }
 
 async function postLogin(email, password) {
-  return await axiosCustomize.post('api/v1/login', { email, password })
+  return await axiosCustomize.post('api/v1/login', { email, password, delay: 1000 })
 }
 
 async function postSignUp(username, email, password) {
   return await axiosCustomize.post('api/v1/register', { username, email, password })
+}
+
+function getQuizByUser() {
+  return axiosCustomize.get('/api/v1/quiz-by-participant')
+}
+
+function getDataQuizById(id) {
+  return axiosCustomize.get(`/api/v1/questions-by-quiz?quizId=${id}`)
 }
 
 export {
@@ -49,4 +58,6 @@ export {
   deleteUser,
   postLogin,
   postSignUp,
+  getQuizByUser,
+  getDataQuizById,
 }

@@ -1,4 +1,12 @@
 import axios from 'axios'
+import NProgress from 'nprogress'
+import { store } from '../redux/store'
+
+NProgress.configure({
+  showSpinner: false,
+  trickleSpeed: 100,
+  easing: 'ease',
+})
 
 const instance = axios.create({
   baseURL: 'http://localhost:8081/',
@@ -8,6 +16,14 @@ const instance = axios.create({
 instance.interceptors.request.use(
   function (config) {
     // Do something before request is sent
+    const state = store.getState()
+    const token = state?.user?.account?.access_token
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+
+    NProgress.start()
     return config
   },
   function (error) {
@@ -21,6 +37,8 @@ instance.interceptors.response.use(
   function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
+    NProgress.done()
+
     return response.data ? response.data : response
   },
   function (error) {
