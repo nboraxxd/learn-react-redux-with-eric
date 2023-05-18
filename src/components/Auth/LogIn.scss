@@ -83,6 +83,7 @@
   }
 
   .login-content .login-btn {
+    min-height: 54px;
     min-width: 185px;
     background: #262627;
     color: #fff;
@@ -97,14 +98,13 @@
       background: #000;
     }
     &:disabled {
-      background-color: #ddd;
+      background-color: #999;
       color: #999999;
     }
-  }
 
-  .login-content .login-spinner {
-    animation: spin 1s infinite linear;
-    margin-right: 5px;
+    &__spin {
+      animation: spin 1s ease infinite;
+    }
 
     @keyframes spin {
       from {
@@ -115,15 +115,15 @@
       }
     }
   }
+}
 
-  .login-content .login-back {
-    margin-top: 10px;
-    text-align: center;
-    span {
-      margin: 0 10px;
-      color: #4c4c4c;
-      text-decoration: underline;
-      cursor: pointer;
-    }
+.login-content .login-back {
+  margin-top: 10px;
+  text-align: center;
+  span {
+    margin: 0 10px;
+    color: #4c4c4c;
+    text-decoration: underline;
+    cursor: pointer;
   }
 }

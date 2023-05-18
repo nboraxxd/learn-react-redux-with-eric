@@ -1,10 +1,13 @@
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import homepageVideo from '../../assets/video-homepage.mp4'
+import { isUserLogin } from '../../redux/selector/userselector'
 import './HomePage.scss'
 
 const HomePage = () => {
   const navigate = useNavigate()
+
+  const isLogged = useSelector(isUserLogin)
 
   return (
     <div className="homepage-container">
@@ -18,9 +21,15 @@ const HomePage = () => {
           typeform instead—and make everyone happy.
         </p>
         <>
-          <button className="homepage-button" onClick={() => navigate('/sign-up')}>
-            Get started - it's free
-          </button>
+          {isLogged ? (
+            <button className="homepage-button" onClick={() => navigate('/users')}>
+              Start quiz now
+            </button>
+          ) : (
+            <button className="homepage-button" onClick={() => navigate('/sign-up')}>
+              Get started - it's free
+            </button>
+          )}
           <ul className="homepage-list">
             <li className="homepage-benefit">
               <p className="homepage-icon">✓</p>

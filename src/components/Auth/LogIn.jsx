@@ -1,14 +1,21 @@
 import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { userLogin } from '../../redux/action/userAction'
 import { postLogin } from '../../services/apiServices'
+import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import './LogIn.scss'
+import { isUserLogin } from '../../redux/selector/userselector'
 
 const LogIn = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
+  const dispatch = useDispatch()
   const navigate = useNavigate()
+  const isLogged = useSelector(isUserLogin)
 
   function validateEmail(email) {
     return String(email)
@@ -23,19 +30,27 @@ const LogIn = () => {
 
     // validate
     const isValidateEmail = validateEmail(email)
-
     if (!isValidateEmail) toast.error('Please check your email')
     if (!password) toast.error('Please check your password')
     if (!isValidateEmail || !password) return
 
+    // loading
+    setIsLoading(true)
+
+    // submit API
     const response = await postLogin(email, password)
 
-    if (response.EC === 0) toast.success(response.EM)
-    if (response.EC !== 0) toast.error(response.EM)
+    if (response.EC === 0) {
+      toast.success(response.EM)
+      dispatch(userLogin(response?.DT))
 
-    setTimeout(() => {
-      navigate('/')
-    }, 4000)
+      setIsLoading(false)
+      navigate('/users')
+    }
+    if (response.EC !== 0) {
+      toast.error(response.EM)
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -84,8 +99,22 @@ const LogIn = () => {
           <div className="login-forgot">
             <a href="#!">Forgot password?</a>
           </div>
-          <button type="submit" className="login-btn" onClick={handleOnClickSubmitLogInBtn}>
-            Log in to Pro Quizzz
+          <button
+            type="submit"
+            className="login-btn"
+            onClick={handleOnClickSubmitLogInBtn}
+            disabled={isLoading}
+          >
+            {!isLoading ? (
+              'Log in to Pro Quizzz'
+            ) : (
+              <AiOutlineLoading3Quarters
+                className="login-btn__spin"
+                color="#fff"
+                fontSize="20px"
+                style={{ margin: '0 auto' }}
+              />
+            )}
           </button>
           <div className="login-back" onClick={() => navigate('/')}>
             <span>Go to homepage</span>
