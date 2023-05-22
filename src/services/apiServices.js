@@ -54,6 +54,16 @@ function postSubmitQuiz(answersQuiz) {
   return axiosCustomize.post('/api/v1/quiz-submit', answersQuiz)
 }
 
+function postAddNewQuiz({ description, name, difficulty, quizImage }) {
+  const newQuiz = new FormData()
+  newQuiz.append('description', description)
+  newQuiz.append('name', name)
+  newQuiz.append('difficulty', difficulty)
+  newQuiz.append('quizImage', quizImage)
+
+  return axiosCustomize.post('/api/v1/quiz', newQuiz)
+}
+
 export {
   getAllUser,
   getAllUserWithPaginate,
@@ -65,4 +75,5 @@ export {
   getQuizByUser,
   getDataQuizById,
   postSubmitQuiz,
+  postAddNewQuiz,
 }
