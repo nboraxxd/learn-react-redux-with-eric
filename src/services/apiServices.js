@@ -50,6 +50,10 @@ function getDataQuizById(id) {
   return axiosCustomize.get(`/api/v1/questions-by-quiz?quizId=${id}`)
 }
 
+function postSubmitQuiz(answersQuiz) {
+  return axiosCustomize.post('/api/v1/quiz-submit', answersQuiz)
+}
+
 export {
   getAllUser,
   getAllUserWithPaginate,
@@ -60,4 +64,5 @@ export {
   postSignUp,
   getQuizByUser,
   getDataQuizById,
+  postSubmitQuiz,
 }

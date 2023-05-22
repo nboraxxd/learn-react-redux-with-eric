@@ -62,9 +62,11 @@ const SideBar = (props) => {
           <Menu iconShape="circle">
             <SubMenu title="Features" icon={<FaGem />}>
               <MenuItem>
-                Quản lý Users <Link to="/admins/manage-users" />
+                Quản lý Users <Link to="manage-users" />
               </MenuItem>
-              <MenuItem>Quản lý bài Quiz</MenuItem>
+              <MenuItem>
+                Quản lý bài Quiz <Link to="manage-quizzes" />
+              </MenuItem>
               <MenuItem>Quản lý câu hỏi</MenuItem>
             </SubMenu>
           </Menu>

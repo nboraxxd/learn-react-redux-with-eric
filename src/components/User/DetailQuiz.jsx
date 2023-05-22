@@ -1,16 +1,19 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { getDataQuizById } from '../../services/apiServices'
+import { getDataQuizById, postSubmitQuiz } from '../../services/apiServices'
 import _ from 'lodash'
 import './DetailQuiz.scss'
 import Question from './Question'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { quizDetail } from '../../redux/selector/userselector'
+import ModalResultQuiz from './ModalResultQuiz'
 
 const DetailQuiz = () => {
   const [dataQuestionList, setDataQuestionList] = useState([])
   const [questionIdx, setQuestionIdx] = useState(0)
+  const [isShowModalResult, setIsShowModalResult] = useState(false)
+  const [dataResultQuiz, setDataResultQuiz] = useState({})
 
   const { id } = useParams()
   const dataQuizDetail = useSelector(quizDetail)
@@ -83,6 +86,50 @@ const DetailQuiz = () => {
     }
   }
 
+  // function handleOnClickFinishBtn() {
+  //   if (!Array.isArray(dataQuestionList) || dataQuestionList.length === 0) return
+  //   const payload = { quizId: currentQuizDetail.id, answers: [] }
+  //   const answers = []
+  //   dataQuestionList.forEach((item) => {
+  //     const questionId = item.id
+  //     const userAnswerId = []
+  //     item.answerOptions.forEach((answerOption) => {
+  //       if (answerOption.isChecked === true) userAnswerId.push(answerOption.id)
+  //     })
+  //     return answers.push({
+  //       questionId,
+  //       userAnswerId,
+  //     })
+  //   })
+  //   payload.answers = answers
+  //   console.log(payload)
+  // }
+
+  async function handleOnClickFinishBtn() {
+    if (!Array.isArray(dataQuestionList) || dataQuestionList.length === 0) return
+
+    const answers = dataQuestionList.map((item) => {
+      const questionId = +item.id
+      const userAnswerId = item.answerOptions
+        .filter((answerOption) => answerOption.isChecked === true)
+        .map((answerOption) => answerOption.id)
+
+      return {
+        questionId,
+        userAnswerId,
+      }
+    })
+
+    const payload = { quizId: currentQuizDetail.id, answers }
+    const response = await postSubmitQuiz(payload)
+    if (response && response.EC === 0) {
+      setIsShowModalResult(true)
+      setDataResultQuiz(response.DT)
+    } else {
+      console.log('something wrongs...')
+    }
+  }
+
   useEffect(() => {
     fetchQuestionListById()
   }, [id])
@@ -117,11 +164,13 @@ const DetailQuiz = () => {
             >
               Next
             </button>
-            <button className="btn btn-warning">Finish</button>
+            <button className="btn btn-warning" onClick={handleOnClickFinishBtn}>
+              Finish
+            </button>
           </div>
         </div>
         <div className="quiz-right">Count down</div>
-        {/* <ModalResult /> */}
+        <ModalResultQuiz show={isShowModalResult} setShow={setIsShowModalResult} dataResultQuiz={dataResultQuiz} />
       </div>
     </div>
   )
