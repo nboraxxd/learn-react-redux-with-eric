@@ -3,6 +3,8 @@ import Select from 'react-select'
 import { MdImageSearch } from 'react-icons/md'
 import { RiDeleteBin5Line } from 'react-icons/ri'
 import './ManageQuiz.scss'
+import { postAddNewQuiz } from '../../../services/apiServices'
+import { toast } from 'react-toastify'
 
 const options = [
   { value: 'EASY', label: 'Easy' },
@@ -13,8 +15,8 @@ const options = [
 const ManageQuiz = () => {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
-  const [type, setType] = useState('')
-  const [image, setImage] = useState('')
+  const [difficulty, setDifficulty] = useState('')
+  const [image, setImage] = useState(null)
   const [imageReview, setImageReview] = useState(null)
 
   function handleOnChangeImage(event) {
@@ -26,9 +28,41 @@ const ManageQuiz = () => {
     }
   }
 
+  function handleOnClickDeleteImageBtn() {
+    setImage(null)
+    setImageReview(null)
+  }
+
+  async function handleOnClickAddBtn() {
+    !name && toast.error('Please check name input')
+    !description && toast.error('Please check description input')
+    !difficulty && toast.error('Please check difficulty select')
+    !image && toast.error('Please add image of quiz')
+    if (!name || !description || !difficulty || !image) return
+
+    const newQuiz = {
+      description,
+      name,
+      difficulty: difficulty?.value,
+      quizImage: image,
+    }
+
+    const response = await postAddNewQuiz(newQuiz)
+    if (response.EC === 0) {
+      toast.success(response.EM)
+      setName('')
+      setDescription('')
+      setDifficulty('')
+      setImage(null)
+      setImageReview(null)
+    } else {
+      toast.error(response.EM)
+    }
+  }
+
   return (
     <div className="manage-quiz container">
-      <h1 className="manage-quiz__title">title</h1>
+      <h1 className="manage-quiz__title">Manage quizzes</h1>
       <br />
       {/* Add new quizzz */}
       <div className="manage-quiz__new">
@@ -63,8 +97,8 @@ const ManageQuiz = () => {
           {/* Select quizzz */}
           <div className="form-floating mb-3">
             <Select
-              defaultValue={type}
-              // onChange={setType}
+              value={difficulty}
+              onChange={setDifficulty}
               options={options}
               placeholder={'Quizzz style'}
               styles={{
@@ -78,6 +112,7 @@ const ManageQuiz = () => {
 
           {/* Image quizzz */}
           <div>
+            {/* Choose image button */}
             <label htmlFor="inputImage" className="form-label modal-label btn btn-primary">
               <MdImageSearch style={{ fontSize: '24px' }} />
               Choose an image
@@ -91,19 +126,25 @@ const ManageQuiz = () => {
               onChange={handleOnChangeImage}
             />
           </div>
-          <div className="modal-preview" style={{ marginTop: '16px' }}>
+          {/* preview image */}
+          <div className="modal-preview" style={{ marginTop: '8px' }}>
             {imageReview ? (
               <img src={imageReview} alt="image review" className="modal-preview-img" />
             ) : (
               <label htmlFor="inputImage">Choose an image...</label>
             )}
-
-            <RiDeleteBin5Line className="modal-preview-delete" />
+            {/* delete image button */}
+            <RiDeleteBin5Line
+              className="modal-preview-delete"
+              onClick={handleOnClickDeleteImageBtn}
+            />
           </div>
 
           {/* Save button */}
           <div style={{ textAlign: 'center' }}>
-            <button className="manage-quiz__btn">Add</button>
+            <button className="manage-quiz__btn" onClick={handleOnClickAddBtn}>
+              Add
+            </button>
           </div>
         </fieldset>
       </div>
