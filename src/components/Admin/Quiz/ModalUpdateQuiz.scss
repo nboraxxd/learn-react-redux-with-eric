@@ -1,36 +1,10 @@
-.manage-quiz {
-  padding: 10px;
-
-  &__title {
-    font-size: 24px;
-  }
-
-  &__new {
-    legend {
-      font-size: 16px;
-    }
-  }
-
-  &__btn {
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-    column-gap: 8px;
-    font-size: 18px;
-  }
-
-  &__table {
-    padding: 20px 20px 0 20px;
-  }
-}
-
 .modal {
   &-preview {
     position: relative;
-    display: flex;
     height: 150px;
     border: 1px dashed #ced4da;
     border-radius: 5px;
+    display: flex;
     justify-content: center;
     align-items: center;
     color: #ced4da;
@@ -39,8 +13,8 @@
       position: absolute;
       top: 5px;
       right: 5px;
-      color: #999;
       font-size: 22px;
+      color: #999;
       cursor: pointer;
     }
 
@@ -53,9 +27,10 @@
 
   &-label {
     display: flex;
-    width: fit-content;
     align-items: center;
     column-gap: 5px;
+    width: fit-content;
     font-size: 18px;
+    margin-bottom: 0;
   }
 }

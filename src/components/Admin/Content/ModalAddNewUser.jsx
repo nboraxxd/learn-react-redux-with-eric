@@ -14,7 +14,7 @@ const ModalAddNewUser = ({ show, setShow, setCurrentPage, fetchUserListWithPagin
   const [password, setPassword] = useState('')
   const [role, setRole] = useState('')
   const [image, setImage] = useState(null)
-  const [imageReview, setImageReivew] = useState(null)
+  const [imageReview, setImageReview] = useState(null)
   const imageRef = useRef()
 
   function handleClose() {
@@ -24,7 +24,7 @@ const ModalAddNewUser = ({ show, setShow, setCurrentPage, fetchUserListWithPagin
     setPassword('')
     setRole('')
     setImage(null)
-    setImageReivew(null)
+    setImageReview(null)
   }
 
   function validateEmail(email) {
@@ -38,14 +38,14 @@ const ModalAddNewUser = ({ show, setShow, setCurrentPage, fetchUserListWithPagin
   function handleClickDeleteImgIcon() {
     imageRef.current.value = null
     setImage(null)
-    setImageReivew(null)
+    setImageReview(null)
   }
 
   function handleChooseAnImage(e) {
     const objectImg = e.target.files[0]
-    if (e.target?.files[0]) {
+    if (objectImg) {
       setImage(objectImg)
-      setImageReivew(URL.createObjectURL(objectImg))
+      setImageReview(URL.createObjectURL(objectImg))
     }
   }
 

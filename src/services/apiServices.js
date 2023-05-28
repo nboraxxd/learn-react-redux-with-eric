@@ -43,15 +43,15 @@ async function postSignUp(username, email, password) {
 }
 
 function getQuizByUser() {
-  return axiosCustomize.get('/api/v1/quiz-by-participant')
+  return axiosCustomize.get('api/v1/quiz-by-participant')
 }
 
 function getDataQuizById(id) {
-  return axiosCustomize.get(`/api/v1/questions-by-quiz?quizId=${id}`)
+  return axiosCustomize.get(`api/v1/questions-by-quiz?quizId=${id}`)
 }
 
 function postSubmitQuiz(answersQuiz) {
-  return axiosCustomize.post('/api/v1/quiz-submit', answersQuiz)
+  return axiosCustomize.post('api/v1/quiz-submit', answersQuiz)
 }
 
 function postAddNewQuiz({ description, name, difficulty, quizImage }) {
@@ -61,7 +61,26 @@ function postAddNewQuiz({ description, name, difficulty, quizImage }) {
   newQuiz.append('difficulty', difficulty)
   newQuiz.append('quizImage', quizImage)
 
-  return axiosCustomize.post('/api/v1/quiz', newQuiz)
+  return axiosCustomize.post('api/v1/quiz', newQuiz)
+}
+
+function getAllQuizForAdmin() {
+  return axiosCustomize.get('api/v1/quiz/all')
+}
+
+function deleteQuiz(id) {
+  return axiosCustomize.delete(`api/v1/quiz/${id}`)
+}
+
+async function putUpdateQuiz({ id, name, description, difficulty, quizImage }) {
+  const quizUpdate = new FormData()
+  quizUpdate.append('id', id)
+  quizUpdate.append('name', name)
+  quizUpdate.append('description', description)
+  quizUpdate.append('difficulty', difficulty)
+  quizUpdate.append('quizImage', quizImage)
+
+  return await axiosCustomize.put('api/v1/quiz', quizUpdate)
 }
 
 export {
@@ -76,4 +95,7 @@ export {
   getDataQuizById,
   postSubmitQuiz,
   postAddNewQuiz,
+  getAllQuizForAdmin,
+  deleteQuiz,
+  putUpdateQuiz,
 }

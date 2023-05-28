@@ -17,7 +17,7 @@ const ModalUpdateUser = (props) => {
   const [role, setRole] = useState('')
   const [image, setImage] = useState(null)
   const [imageReview, setImageReivew] = useState(null)
-  const imageRef = useRef()
+  // const imageRef = useRef()
 
   useEffect(() => {
     if (_.isEmpty(userUpdate)) return
@@ -49,7 +49,7 @@ const ModalUpdateUser = (props) => {
   }
 
   function handleClickDeleteImgIcon() {
-    imageRef.current.value = null
+    // imageRef.current.value = null
     setImage(null)
     setImageReivew(null)
   }
@@ -182,7 +182,7 @@ const ModalUpdateUser = (props) => {
                 type="file"
                 accept="image/png, image/jpeg, image/gif, image/svg+xml"
                 id="inputImage"
-                ref={imageRef}
+                // ref={imageRef}
                 hidden
                 onChange={(e) => handleChooseAnImage(e)}
               />

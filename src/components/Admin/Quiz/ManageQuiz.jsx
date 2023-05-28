@@ -1,154 +1,79 @@
-import React, { useState } from 'react'
-import Select from 'react-select'
-import { MdImageSearch } from 'react-icons/md'
-import { RiDeleteBin5Line } from 'react-icons/ri'
+import React, { useEffect, useState } from 'react'
+import { FiUserPlus } from 'react-icons/fi'
+import ModalAddNewQuiz from './ModalAddNewQuiz'
+import TableQuiz from './TableQuiz'
 import './ManageQuiz.scss'
-import { postAddNewQuiz } from '../../../services/apiServices'
-import { toast } from 'react-toastify'
-
-const options = [
-  { value: 'EASY', label: 'Easy' },
-  { value: 'MEDIUM', label: 'Medium' },
-  { value: 'HARD', label: 'Hard' },
-]
+import { getAllQuizForAdmin } from '../../../services/apiServices'
+import ModalDeleteQuiz from './ModalDeleteQuiz'
+import ModalUpdateQuiz from './ModalUpdateQuiz'
 
 const ManageQuiz = () => {
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
-  const [difficulty, setDifficulty] = useState('')
-  const [image, setImage] = useState(null)
-  const [imageReview, setImageReview] = useState(null)
+  const [showAddNewQuizModal, setShowAddNewQuizModal] = useState(false)
+  const [showDeleteQuizModal, setShowDeleteQuizModal] = useState(false)
+  const [showUpdateQuizModal, setShowUpdateQuizModal] = useState(false)
 
-  function handleOnChangeImage(event) {
-    const file = event.target.files[0]
+  const [quizList, setQuizList] = useState([])
+  const [quizDeleteItem, setQuizDeleteItem] = useState({})
+  const [quizUpdateItem, setQuizUpdateItem] = useState({})
 
-    if (file) {
-      setImage(file)
-      setImageReview(URL.createObjectURL(file))
-    }
+  useEffect(() => {
+    fetchQuizList()
+  }, [])
+
+  async function fetchQuizList() {
+    const response = await getAllQuizForAdmin()
+
+    if (response?.EC === 0) return setQuizList(response.DT)
   }
 
-  function handleOnClickDeleteImageBtn() {
-    setImage(null)
-    setImageReview(null)
+  function handleOnClickDeleteBtn(quizDeleteData) {
+    setShowDeleteQuizModal(true)
+    setQuizDeleteItem(quizDeleteData)
   }
 
-  async function handleOnClickAddBtn() {
-    !name && toast.error('Please check name input')
-    !description && toast.error('Please check description input')
-    !difficulty && toast.error('Please check difficulty select')
-    !image && toast.error('Please add image of quiz')
-    if (!name || !description || !difficulty || !image) return
-
-    const newQuiz = {
-      description,
-      name,
-      difficulty: difficulty?.value,
-      quizImage: image,
-    }
-
-    const response = await postAddNewQuiz(newQuiz)
-    if (response.EC === 0) {
-      toast.success(response.EM)
-      setName('')
-      setDescription('')
-      setDifficulty('')
-      setImage(null)
-      setImageReview(null)
-    } else {
-      toast.error(response.EM)
-    }
+  function handleOnClickUpdateBtn(quizUpdateData) {
+    setShowUpdateQuizModal(true)
+    setQuizUpdateItem(quizUpdateData)
   }
 
   return (
-    <div className="manage-quiz container">
+    <div className="manage-quiz">
       <h1 className="manage-quiz__title">Manage quizzes</h1>
-      <br />
-      {/* Add new quizzz */}
-      <div className="manage-quiz__new">
-        <fieldset className="border rounded-3 p-3">
-          <legend className="float-none w-auto px-3">Add Quizzz</legend>
-          {/* Name quizzz */}
-          <div className="form-floating mb-3">
-            <input
-              type="text"
-              className="form-control"
-              id="floatingInput"
-              placeholder="Name Quizzz"
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-            />
-            <label htmlFor="floatingInput">Name Quizzz</label>
-          </div>
+      <div className="manage-quiz__content">
+        <button
+          className="btn btn-primary manage-quiz__btn"
+          onClick={() => setShowAddNewQuizModal(true)}
+        >
+          <FiUserPlus style={{ fontSize: '22px' }} /> Add new user
+        </button>
 
-          {/* Description quizzz */}
-          <div className="form-floating mb-3">
-            <textarea
-              type="text"
-              className="form-control"
-              id="floatingInput"
-              placeholder="Description"
-              value={description}
-              onChange={(event) => setDescription(event.target.value)}
-            />
-            <label htmlFor="floatingInput">Description</label>
-          </div>
+        <ModalAddNewQuiz
+          show={showAddNewQuizModal}
+          setShow={setShowAddNewQuizModal}
+          fetchQuizList={fetchQuizList}
+        />
 
-          {/* Select quizzz */}
-          <div className="form-floating mb-3">
-            <Select
-              value={difficulty}
-              onChange={setDifficulty}
-              options={options}
-              placeholder={'Quizzz style'}
-              styles={{
-                control: (baseStyles) => ({
-                  ...baseStyles,
-                  height: '48px',
-                }),
-              }}
-            />
-          </div>
-
-          {/* Image quizzz */}
-          <div>
-            {/* Choose image button */}
-            <label htmlFor="inputImage" className="form-label modal-label btn btn-primary">
-              <MdImageSearch style={{ fontSize: '24px' }} />
-              Choose an image
-            </label>
-            <input
-              type="file"
-              accept="image/png, image/jpeg, image/gif, image/svg+xml"
-              id="inputImage"
-              className="form-control"
-              hidden
-              onChange={handleOnChangeImage}
-            />
-          </div>
-          {/* preview image */}
-          <div className="modal-preview" style={{ marginTop: '8px' }}>
-            {imageReview ? (
-              <img src={imageReview} alt="image review" className="modal-preview-img" />
-            ) : (
-              <label htmlFor="inputImage">Choose an image...</label>
-            )}
-            {/* delete image button */}
-            <RiDeleteBin5Line
-              className="modal-preview-delete"
-              onClick={handleOnClickDeleteImageBtn}
-            />
-          </div>
-
-          {/* Save button */}
-          <div style={{ textAlign: 'center' }}>
-            <button className="manage-quiz__btn" onClick={handleOnClickAddBtn}>
-              Add
-            </button>
-          </div>
-        </fieldset>
+        <div className="manage-quiz__table">
+          <TableQuiz
+            quizList={quizList}
+            handleOnClickDeleteBtn={handleOnClickDeleteBtn}
+            handleOnClickUpdateBtn={handleOnClickUpdateBtn}
+          />
+          <ModalUpdateQuiz
+            show={showUpdateQuizModal}
+            setShow={setShowUpdateQuizModal}
+            quizUpdate={quizUpdateItem}
+            setQuizUpdate={setQuizUpdateItem}
+            fetchQuizList={fetchQuizList}
+          />
+          <ModalDeleteQuiz
+            show={showDeleteQuizModal}
+            setShow={setShowDeleteQuizModal}
+            quizDelete={quizDeleteItem}
+            fetchQuizList={fetchQuizList}
+          />
+        </div>
       </div>
-      <div className="manage-quiz__detail">table</div>
     </div>
   )
 }

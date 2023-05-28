@@ -105,16 +105,16 @@ const ManageUser = () => {
           currentPage={currentPage}
           fetchUserListWithPaginate={fetchUserListWithPaginate}
         />
+        <ModalDeleteUser
+          show={showModalDeleteUser}
+          setShow={setShowModalDeleteUser}
+          userList={userList}
+          userDelete={userDelete}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          fetchUserListWithPaginate={fetchUserListWithPaginate}
+        />
       </div>
-      <ModalDeleteUser
-        show={showModalDeleteUser}
-        setShow={setShowModalDeleteUser}
-        userList={userList}
-        userDelete={userDelete}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        fetchUserListWithPaginate={fetchUserListWithPaginate}
-      />
     </div>
   )
 }
